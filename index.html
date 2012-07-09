@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+
+    <title>jQuery Selectable Plugin - Turn anything into selectable/checkable element</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="http://twitter.github.com/bootstrap/assets/css/bootstrap.css" type="text/css" />
+    <link rel="stylesheet" href="http://twitter.github.com/bootstrap/assets/js/google-code-prettify/prettify.css" type="text/css" />
+
+    <script type="text/javascript" src="http://twitter.github.com/bootstrap/assets/js/jquery.js" charset="utf-8"></script>
+    <script type="text/javascript" src="src/jquery.selectable.js" charset="utf-8"></script>
+    <script type="text/javascript" src="http://twitter.github.com/bootstrap/assets/js/google-code-prettify/prettify.js" charset="utf-8"></script>
+
+    <style type="text/css" media="all">
+      .jumbotron { position: relative; }
+      .jumbotron h1 { margin-bottom: 9px; font-size: 81px; font-weight: bold; letter-spacing: -1px; line-height: 1; }
+      .jumbotron p { margin-bottom: 18px; font-weight: 300; }
+      .jumbotron .btn-large { font-size: 20px; font-weight: normal; padding: 14px 24px; margin-right: 10px; -webkit-border-radius: 6px; -moz-border-radius: 6px; border-radius: 6px; }
+      .jumbotron .btn-large small { font-size: 14px; }
+
+      /* Masthead (docs home) */
+      .masthead { padding-top: 36px; margin-bottom: 72px; }
+      .masthead h1, .masthead p { text-align: center; }
+      .masthead h1 { margin-bottom: 18px; }
+      .masthead p { margin-left: 5%; margin-right: 5%; font-size: 30px; line-height: 36px; }
+
+      /* Footer */
+      .footer { margin-top: 45px; padding: 35px 0 36px; border-top: 1px solid #e5e5e5; }
+      .footer p { margin-bottom: 0; color: #555; }
+    </style>
+
+    <script type="text/javascript" charset="utf-8">
+      var handler = null;
+
+      $(function() {
+
+        $('#example1 .btn').selectable({
+          class: 'btn-info',
+          onChange: function() {
+            $('#example1-serialized').html( decodeURIComponent($('#example1').serialize()) );
+          }
+        });
+
+        $('#example2 .btn').selectable({
+          radio: true,
+          class: 'btn-inverse',
+          onChange: function() {
+            $('#example2-serialized').html( decodeURIComponent($('#example2').serialize()) );
+          }
+        });
+
+        handler = $('#example3 .btn').selectable({
+          class: 'btn-inverse',
+          onSelected: function(el) {
+            console.log("onSelected -> ", el);
+          },
+          onChange: function(data) {
+            var ids = [];
+            $(data.selected).each(function(){
+              ids.push($(this).prop('tagName'))
+            });
+            data.selected = ids;
+            $('#example3-output').append("onChange -&gt; " + JSON.stringify(data) + "\n");
+          }
+        });
+
+      });
+    </script>
+  </head>
+  <body>
+  <a href="https://github.com/endel/jquery.selectable.js" target="_blank"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_left_darkblue_121621.png" alt="Fork me on GitHub"></a>
+
+  <div class="container">
+
+    <div class="jumbotron masthead">
+      <div class="inner">
+        <h1>jquery.selectable.js</h1>
+        <p>Turn anything into selectable/checkable element.</p>
+      </div>
+    </div>
+
+    <div class="page-header">
+      <h1>Checkbox Example</h1>
+    </div>
+    <p>Include a hidden checkbox inside your fancy checkbox element. Selectable plugin handle checking the real checkbox for you.</p>
+
+    <div class="row">
+      <div class="span6">
+        <form id="example1" action="" method="get">
+          <div class="btn-group">
+            <span class="btn">
+              Hey <input type="checkbox" class="hide" name="example1[]" value="Hey" />
+            </span>
+            <span class="btn">
+              You <input type="checkbox" class="hide" name="example1[]" value="You" />
+            </span>
+            <span class="btn">
+              Should <input type="checkbox" class="hide" name="example1[]" value="Should" />
+            </span>
+            <span class="btn">
+              Click <input type="checkbox" class="hide" name="example1[]" value="Click" />
+            </span>
+            <span class="btn">
+              Me <input type="checkbox" class="hide" name="example1[]" value="Me" />
+            </span>
+          </div>
+        </form>
+
+        <textarea id="example1-serialized" class="span6"></textarea>
+      </div>
+
+      <div class="span6">
+<pre class="prettyprint">
+$('#example1 .btn').selectable({
+  class: 'btn-info'
+})
+</pre>
+      </div>
+    </div>
+
+
+    <div class="page-header">
+      <h1>Radio Example</h1>
+    </div>
+    <p>The same for radio buttons, just include a hidden input radio, the plugin handle selecting it for you.</p>
+    <div class="row">
+      <div class="span6">
+        <form id="example2" action="" method="get">
+          <div class="btn-group">
+            <span class="btn">
+              Hey <input type="radio" class="hide" name="example2" value="Hey" />
+            </span>
+            <span class="btn">
+              You <input type="radio" class="hide" name="example2" value="You" />
+            </span>
+            <span class="btn">
+              Should <input type="radio" class="hide" name="example2" value="Should" />
+            </span>
+            <span class="btn">
+              Click <input type="radio" class="hide" name="example2" value="Click" />
+            </span>
+            <span class="btn">
+              Me <input type="radio" class="hide" name="example2" value="Me" />
+            </span>
+          </div>
+        </form>
+
+        <textarea id="example2-serialized" class="span6"></textarea>
+      </div>
+
+      <div class="span6">
+        <pre class="prettyprint">
+$('#example2 .btn').selectable({
+  radio: true,
+  class: 'btn-inverse'
+})
+        </pre>
+
+      </div>
+    </div>
+
+
+    <div class="page-header">
+      <h1>Callbacks and functions</h1>
+    </div>
+
+    <h3>Callbacks</h3>
+    <ul class="unstyled">
+      <li><b>onSelected</b>: is dispatched only when you select an item, with the element as argument.</li>
+      <li><b>onChange</b>: is dispatched at every change of selected/deselected element, with the entire status as argument ().</li>
+    </ul>
+
+    <div class="row">
+      <div class="span6">
+        <form id="example3" action="" method="get">
+          <div class="btn-group">
+            <span class="btn">
+              Hey <input type="checkbox" class="hide" name="example3" value="Hey" />
+            </span>
+            <span class="btn">
+              You <input type="checkbox" class="hide" name="example3" value="You" />
+            </span>
+            <span class="btn">
+              Should <input type="checkbox" class="hide" name="example3" value="Should" />
+            </span>
+            <span class="btn">
+              Click <input type="checkbox" class="hide" name="example3" value="Click" />
+            </span>
+            <span class="btn">
+              Me <input type="checkbox" class="hide" name="example3" value="Me" />
+            </span>
+          </div>
+        </form>
+
+        <textarea id="example3-output" rows="12" class="span6"></textarea>
+        <div class="btn-group">
+          <a href="#" class="btn" onclick="handler.toggleSelectAll();return false;">toggleSelectAll()</a>
+          <a href="#" class="btn" onclick="handler.selectAll();return false;">selectAll()</a>
+          <a href="#" class="btn" onclick="handler.deselectAll();return false;">deselectAll()</a>
+          <a href="#" class="btn" onclick="handler.removeSelected();return false;">removeSelected()</a>
+        </div>
+      </div>
+
+      <div class="span6">
+        <pre class="prettyprint">
+var handler = $('#example3 .btn').selectable({
+  class: 'btn-inverse',
+  onSelected: function(el) {
+    console.log("onSelected -&gt; ", el);
+  },
+  onChange: function(data) {
+    var ids = [];
+    $(data.selected).each(function(){
+      ids.push($(this).prop('tagName'))
+    });
+    data.selected = ids;
+    $('#example3-output').append("onChange -&gt; " + JSON.stringify(data) + "\n");
+  }
+});
+
+// Supported functions
+handler.toggleSelectAll()
+handler.selectAll()
+handler.deselectAll()
+handler.removeSelected()
+        </pre>
+
+      </div>
+    </div>
+
+
+    <footer class="footer">
+      <p>jQuery Selectable Plugin v0.3.1, licensed under <a href="http://en.wikipedia.org/wiki/MIT_License">MIT License</a></p>
+      <p>© 2011-2012 Endel Dreyer - <a href="http://github.com/endel" target="_blank">GitHub</a> | <a href="http://twitter.com/endel" target="_blank">Twitter</a></p>
+    </footer>
+
+  </div>
+
+  </body>
+</html>
