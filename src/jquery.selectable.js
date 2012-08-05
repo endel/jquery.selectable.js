@@ -1,8 +1,8 @@
 /*
  * jquery.selectable.js
  * --------------------
- * Requires jQuery >= 1.3.1
- * Version: 0.3.1
+ * Requires jQuery >= 1.3.2
+ * Version: 0.3.2
  *
  * Copyright (c) 2012 Endel Dreyer (http://endel.me)
  *
@@ -28,29 +28,32 @@
  */
 
 (function($) {
+    "use strict";
+
     $.fn.selectable = function(options) {
+
         var defaults = {
-            radio: false,
-            class: 'selected',
-            onChange: function(e) {},
-            onSelected: function(e) {}
-        },
-        opts = $.extend(defaults, options),
-        selector = this.selector,
-        allSelected = false,
-        that;
+                'radio': false,
+                'class': 'selected',
+                'onChange': function(e) {},
+                'onSelected': function(e) {}
+            },
+            opts = $.extend(defaults, options),
+            selector = this.selector,
+            allSelected = false,
+            that;
 
         that = {
 
             // Register element click (select / unselect)
             elements: $(selector).live('click', function() {
                 var selection_index = $(this).find('.selection-index'),
-                is_selected = $(this).hasClass(opts.class);
+                is_selected = $(this).hasClass(opts['class']);
 
                 // If radio option is true, check radio button and
                 // Just give class to the last checked element
                 if (opts.radio) {
-                    $(selector).removeClass(opts.class);
+                    $(selector).removeClass(opts['class']);
                     $(selector).find(':radio').attr('checked', false);
                     $(this).find(':radio').attr('checked', true);
                 } else {
@@ -67,8 +70,8 @@
                 }
 
                 // Swap class
-                $(this).toggleClass(opts.class);
-                if ($(this).hasClass(opts.class)) {
+                $(this).toggleClass(opts['class']);
+                if ($(this).hasClass(opts['class'])) {
                     opts.onSelected($(this));
                 }
 
@@ -87,20 +90,20 @@
             selectAll: function() {
                 this.deselectAll();
                 $(selector).each(function() {
-                    $(this).addClass(opts.class);
+                    $(this).addClass(opts['class']);
                 });
                 this.onChange();
             },
 
             deselectAll: function() {
                 $(selector).each(function() {
-                    $(this).removeClass(opts.class);
+                    $(this).removeClass(opts['class']);
                 });
                 this.onChange();
             },
 
             removeSelected: function() {
-                $(selector + '.' + opts.class).each(function() {
+                $(selector + '.' + opts['class']).each(function() {
                     $(this).remove();
                 });
                 this.onChange();
@@ -115,20 +118,22 @@
                 var total = this._items().size(),
                 selected = this._itemsSelected(),
                 totalSelected = selected.size();
-                allSelected = (total == totalSelected) && total != 0;
+                allSelected = (total === totalSelected) && total !== 0;
 
                 return {
-                    selected: selected.sort(function(a,b){ return (parseInt($(a).find('.selection-index').val()) > parseInt($(b).find('.selection-index').val())) }),
+                    selected: selected.sort(function(a,b){
+                        return (parseInt($(a).find('.selection-index').val(), 10) > parseInt($(b).find('.selection-index').val(), 10));
+                    }),
                     totalSelected: totalSelected,
                     total: total,
                     allSelected: allSelected
-                }
+                };
             },
 
             refresh: function() {
                 // Supports only radio selectable
                 $(selector + ' input[checked]').each(function() {
-                    $(this).parent().addClass(opts.class);
+                    $(this).parent().addClass(opts['class']);
                 });
                 this.onChange();
             },
@@ -138,9 +143,14 @@
             },
 
             _itemsSelected: function() {
-                return $(selector + '.'+opts.class);
+                return $(selector + '.' + opts['class']);
             }
         };
+
+        // Add selected class to already selected elements
+        $(selector).find(':checked').each(function() {
+            $(this).closest(selector).addClass(opts['class']);
+        });
 
         // Let user setup interface with onChange
         that.onChange();
