@@ -26,7 +26,6 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
  */
-
 (function($) {
     "use strict";
 
@@ -38,6 +37,8 @@
                 'onChange': function(e) {},
                 'onSelected': function(e) {}
             },
+            jqversion = $.prototype.jquery.split('.'),
+            onFunc = (jqversion[0]==="1" && parseInt(jqversion[1], 10) < 9) ? 'live' : 'on',
             opts = $.extend(defaults, options),
             selector = this.selector,
             allSelected = false,
@@ -46,7 +47,7 @@
         that = {
 
             // Register element click (select / unselect)
-            elements: $(selector).on('click', function() {
+            elements: $(selector)[onFunc]('click', function() {
                 var selection_index = $(this).find('.selection-index'),
                 is_selected = $(this).hasClass(opts['class']);
 
