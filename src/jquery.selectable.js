@@ -2,7 +2,7 @@
  * jquery.selectable.js
  * --------------------
  * Requires jQuery >= 1.3.2
- * Version: 0.3.2
+ * Version: 0.4
  *
  * Copyright (c) 2012 Endel Dreyer (http://endel.me)
  *
@@ -46,7 +46,7 @@
         that = {
 
             // Register element click (select / unselect)
-            elements: $(selector).live('click', function() {
+            elements: $(selector).on('click', function() {
                 var selection_index = $(this).find('.selection-index'),
                 is_selected = $(this).hasClass(opts['class']);
 
